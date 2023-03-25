@@ -10,6 +10,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerialiser
     permission_classes = (AllowAny, )
+    pagination_class = None
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
@@ -18,3 +19,4 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AllowAny, )
     filter_backends = (SearchFilter, )
     search_fields = ('^name', )
+    pagination_class = None
