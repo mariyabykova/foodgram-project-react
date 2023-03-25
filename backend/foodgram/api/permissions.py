@@ -8,4 +8,5 @@ class CurrentUserOrSuperuserOrReadOnly(permissions.BasePermission):
              and request.user.is_authenticated) or
              (request.path_info != settings.USER_ME_PATH
               and request.method in permissions.SAFE_METHODS
-              or request.user.is_superuser))
+              or request.user.is_superuser
+              or request.user.is_staff))
