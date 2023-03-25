@@ -162,3 +162,6 @@ DJOSER = {
         'user_list': ['rest_framework.permissions.AllowAny'],
     }
 }
+
+EMPTY_VALUE = '-пусто-'
+USER_ME_PATH = '/api/users/me/'
