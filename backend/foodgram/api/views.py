@@ -1,12 +1,11 @@
-from djoser.views import UserViewSet
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny
 
-from api.serializers import UserGetSerializer
-from users.models import User
+from api.serializers import TagSerialiser
+from recipes.models import Tag
 
 
-# class CustomUserViewSet(UserViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserGetSerializer
-#     permission_classes = (IsAuthenticatedOrReadOnly, )
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerialiser
+    permission_classes = (AllowAny, )
