@@ -10,7 +10,7 @@ from api.serializers import (IngredientSerializer, TagSerialiser,
                              UserSubscribeRepresentSerializer,
                              UserSubscribeSerializer)
 from recipes.models import Ingredient, Tag
-from users.models import User
+from users.models import Subscription, User
 
 
 class UserSubscribeView(APIView):
@@ -24,6 +24,17 @@ class UserSubscribeView(APIView):
         serializer.save()
         serializer = UserSubscribeRepresentSerializer(author, context={'request': request})
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def delete(self, request, user_id):
+        user = get_object_or_404(User, username=request.user)
+        author = get_object_or_404(User, id=user_id)
+        if not Subscription.objects.filter(user=user, author=author).exists():
+            return Response(
+                {'errors': 'Вы не подписаны на этого пользователя'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        Subscription.objects.get(user=user.id, author=user_id).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
