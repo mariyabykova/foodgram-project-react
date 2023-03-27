@@ -6,10 +6,12 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.serializers import (IngredientSerializer, TagSerialiser,
+from api.permissions import IsAdminAuthorOrReadOnly
+from api.serializers import (IngredientSerializer, RecipeCreateSerializer,
+                             RecipeGetSerializer, TagSerialiser,
                              UserSubscribeRepresentSerializer,
                              UserSubscribeSerializer)
-from recipes.models import Ingredient, Tag
+from recipes.models import Ingredient, Recipe, Tag
 from users.models import Subscription, User
 
 
@@ -61,3 +63,13 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = (SearchFilter, )
     search_fields = ('^name', )
     pagination_class = None
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    permission_classes = (IsAdminAuthorOrReadOnly, )
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return RecipeGetSerializer
+        return RecipeCreateSerializer
