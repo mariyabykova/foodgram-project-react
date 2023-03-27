@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework import viewsets, status
+from rest_framework import mixins, status, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -37,6 +37,14 @@ class UserSubscribeView(APIView):
             )
         Subscription.objects.get(user=user.id, author=user_id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UserSubscriptionsViewSet(mixins.ListModelMixin,
+                               viewsets.GenericViewSet):
+    serializer_class = UserSubscribeRepresentSerializer
+    
+    def get_queryset(self):
+        return User.objects.filter(following__user=self.request.user)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
