@@ -3,7 +3,7 @@ from djoser.serializers import UserCreateSerializer, UserSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from api.utils import Base64ImageField
+from api.utils import Base64ImageField, create_ingredients
 from recipes.models import (Favorite, Ingredient,
                             Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
@@ -181,13 +181,22 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(author=request.user, **validated_data)
         recipe.tags.set(tags)
-        for ingredient in ingredients:
-            current_ingredient = get_object_or_404(Ingredient, id=ingredient.get('id'))
-            amount = ingredient.get('amount')
-            RecipeIngredient.objects.create(
-                recipe=recipe, ingredient=current_ingredient, amount=amount
-            )
+        create_ingredients(ingredients, recipe)
         return recipe
     
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('recipeingredients')
+        tags = validated_data.pop('tags')
+        instance.tags.clear()
+        instance.tags.set(tags)
+        RecipeIngredient.objects.filter(recipe=instance).delete()
+        instance.image = validated_data.get('image', instance.name)
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get('cooking_time', instance.cooking_time)
+        create_ingredients(ingredients, instance)
+        instance.save()
+        return instance
+
     def to_representation(self, instance):
         return RecipeGetSerializer(instance, context=self.context).data
