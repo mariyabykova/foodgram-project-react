@@ -1,11 +1,12 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-
 from rest_framework import mixins, status, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.filters import RecipeFilter
 from api.permissions import IsAdminAuthorOrReadOnly
 from api.serializers import (IngredientSerializer, RecipeCreateSerializer,
                              RecipeGetSerializer, TagSerialiser,
@@ -68,6 +69,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsAdminAuthorOrReadOnly, )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
