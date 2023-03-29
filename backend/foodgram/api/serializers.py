@@ -83,6 +83,12 @@ class UserSubscribeSerializer(serializers.ModelSerializer):
                 'Нельзя подписываться на самого себя!'
             )
         return data
+    
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        return UserSubscribeRepresentSerializer(
+            instance.author, context={'request': request}
+        ).data
 
 
 

@@ -27,9 +27,6 @@ class UserSubscribeView(APIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        serializer = UserSubscribeRepresentSerializer(
-            author, context={'request': request}
-        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def delete(self, request, user_id):
