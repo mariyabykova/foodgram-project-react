@@ -200,3 +200,23 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return RecipeGetSerializer(instance, context=self.context).data
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = '__all__'
+        validators = [
+            UniqueTogetherValidator(
+            queryset=Favorite.objects.all(),
+            fields=('user', 'recipe'),
+            message='Рецепт уже добавлен в избранное'
+            )
+        ]
+    
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        return RecipeSmallSerializer(
+            instance.recipe,
+            context = {'request': request}
+        ).data
