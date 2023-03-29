@@ -20,7 +20,6 @@ from users.models import Subscription, User
 
 class UserSubscribeView(APIView):
     def post(self, request, user_id):
-        author = get_object_or_404(User, id=user_id)
         serializer = UserSubscribeSerializer(
             data={'user': request.user.id, 'author': user_id},
             context={'request': request}
