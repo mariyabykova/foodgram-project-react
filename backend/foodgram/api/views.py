@@ -18,10 +18,10 @@ from users.models import Subscription, User
 
 class UserSubscribeView(APIView):
     def post(self, request, user_id):
-        user = get_object_or_404(User, username=request.user)
         author = get_object_or_404(User, id=user_id)
         serializer = UserSubscribeSerializer(
-            data={'user': user.id, 'author': user_id}
+            data={'user': request.user.id, 'author': user_id},
+            context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -31,14 +31,13 @@ class UserSubscribeView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def delete(self, request, user_id):
-        user = get_object_or_404(User, username=request.user)
         author = get_object_or_404(User, id=user_id)
-        if not Subscription.objects.filter(user=user, author=author).exists():
+        if not Subscription.objects.filter(user=request.user, author=author).exists():
             return Response(
                 {'errors': 'Вы не подписаны на этого пользователя'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        Subscription.objects.get(user=user.id, author=user_id).delete()
+        Subscription.objects.get(user=request.user.id, author=user_id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
