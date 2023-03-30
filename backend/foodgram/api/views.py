@@ -33,12 +33,14 @@ class UserSubscribeView(APIView):
     
     def delete(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
-        if not Subscription.objects.filter(user=request.user, author=author).exists():
+        if not Subscription.objects.filter(user=request.user,
+                                           author=author).exists():
             return Response(
                 {'errors': 'Вы не подписаны на этого пользователя'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        Subscription.objects.get(user=request.user.id, author=user_id).delete()
+        Subscription.objects.get(user=request.user.id,
+                                 author=user_id).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -90,7 +92,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         
         if request.method == 'DELETE':
             error_message = 'У вас нет этого рецепта в избранном'
-            return delete_model_instance(request, Favorite, recipe, error_message)
+            return delete_model_instance(request, Favorite,
+                                         recipe, error_message)
     
     @action(
             detail=True,
@@ -100,8 +103,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'POST':
-            return create_model_instance(request, recipe, ShoppingCartSerializer)
+            return create_model_instance(request, recipe,
+                                         ShoppingCartSerializer)
         
         if request.method == 'DELETE':
             error_message = 'У вас нет этого рецепта в списке покупок'
-            return delete_model_instance(request, ShoppingCart, recipe, error_message)
+            return delete_model_instance(request, ShoppingCart,
+                                         recipe, error_message)
