@@ -20,7 +20,8 @@ class Base64ImageField(serializers.ImageField):
 
 def create_ingredients(ingredients, recipe):
     for ingredient in ingredients:
-            current_ingredient = get_object_or_404(Ingredient, id=ingredient.get('id'))
+            current_ingredient = get_object_or_404(Ingredient,
+                                                   id=ingredient.get('id'))
             amount = ingredient.get('amount')
             RecipeIngredient.objects.create(
                     recipe=recipe,
@@ -38,8 +39,10 @@ def create_model_instance(request, instance, serializer_name):
     serializer.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
 def delete_model_instance(request, model_name, instance, error_message):
-    if not model_name.objects.filter(user=request.user, recipe=instance).exists():
+    if not model_name.objects.filter(user=request.user,
+                                     recipe=instance).exists():
         return Response(
             {'errors': error_message},
                 status=status.HTTP_404_NOT_FOUND
