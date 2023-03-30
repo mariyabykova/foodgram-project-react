@@ -21,8 +21,9 @@ from users.models import Subscription, User
 
 class UserSubscribeView(APIView):
     def post(self, request, user_id):
+        author = get_object_or_404(User, id=user_id)
         serializer = UserSubscribeSerializer(
-            data={'user': request.user.id, 'author': user_id},
+            data={'user': request.user.id, 'author': author.id},
             context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
