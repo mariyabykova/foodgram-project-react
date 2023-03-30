@@ -11,10 +11,11 @@ from api.filters import RecipeFilter
 from api.permissions import IsAdminAuthorOrReadOnly
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeCreateSerializer,
-                             RecipeGetSerializer, TagSerialiser,
+                             RecipeGetSerializer, ShoppingCartSerializer,
+                             TagSerialiser,
                              UserSubscribeRepresentSerializer,
                              UserSubscribeSerializer)
-from recipes.models import Favorite, Ingredient, Recipe, Tag
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscription, User
 
 
@@ -98,4 +99,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     status=status.HTTP_404_NOT_FOUND
                 )
             Favorite.objects.filter(user=request.user, recipe=recipe).delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    @action(
+            detail=True,
+            methods=['post', 'delete'],
+            permission_classes=[IsAuthenticated, ]
+    )
+    def shopping_cart(self, request, pk):
+        recipe = get_object_or_404(Recipe, id=pk)
+        if request.method == 'POST':
+            serializer = ShoppingCartSerializer(
+                data={'user': request.user.id, 'recipe': recipe.id},
+                context={'request': request}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        if request.method == 'DELETE':
+            if not ShoppingCart.objects.filter(user=request.user, recipe=recipe).exists():
+                return Response(
+                    {'errors': 'У вас нет этого рецепта в списке покупок'},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            ShoppingCart.objects.filter(user=request.user, recipe=recipe).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

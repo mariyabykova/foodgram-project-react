@@ -226,3 +226,23 @@ class FavoriteSerializer(serializers.ModelSerializer):
             instance.recipe,
             context = {'request': request}
         ).data
+
+
+class ShoppingCartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShoppingCart
+        fields = '__all__'
+        validators = [
+            UniqueTogetherValidator(
+            queryset=ShoppingCart.objects.all(),
+            fields=('user', 'recipe'),
+            message='Рецепт уже добавлен в список покупок'
+            )
+        ]
+    
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        return RecipeSmallSerializer(
+            instance.recipe,
+            context = {'request': request}
+        ).data
