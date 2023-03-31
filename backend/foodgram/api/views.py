@@ -23,6 +23,7 @@ from users.models import Subscription, User
 
 
 class UserSubscribeView(APIView):
+    """Создание/удаление подписки на пользователя."""
     def post(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
         serializer = UserSubscribeSerializer(
@@ -48,6 +49,7 @@ class UserSubscribeView(APIView):
 
 class UserSubscriptionsViewSet(mixins.ListModelMixin,
                                viewsets.GenericViewSet):
+    """Получение списка всех подписок на пользователей."""
     serializer_class = UserSubscribeRepresentSerializer
     
     def get_queryset(self):
@@ -55,6 +57,7 @@ class UserSubscriptionsViewSet(mixins.ListModelMixin,
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    """Получение информации о тегах."""
     queryset = Tag.objects.all()
     serializer_class = TagSerialiser
     permission_classes = (AllowAny, )
@@ -62,6 +65,7 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+    """Получение информации об ингредиентах."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny, )
@@ -71,6 +75,11 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """Работа с рецептами. Создание/изменение/удаление рецепта.
+    Получение информации о рецептах.
+    Добавление рецептов в избранное и список покупок.
+    Отправка файла со списком рецептов.
+    """
     queryset = Recipe.objects.all()
     permission_classes = (IsAdminAuthorOrReadOnly, )
     filter_backends = (DjangoFilterBackend,)
@@ -88,6 +97,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAuthenticated, ]
     )
     def favorite(self, request, pk):
+        """Работа с избранными рецептами.
+        Удаление/добавление в избранное.
+        """
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'POST':
             return create_model_instance(request, recipe, FavoriteSerializer)
@@ -103,6 +115,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAuthenticated, ]
     )
     def shopping_cart(self, request, pk):
+        """Работа со списком покупок.
+        Удаление/добавление в список покупок.
+        """
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'POST':
             return create_model_instance(request, recipe,
@@ -119,6 +134,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=[IsAuthenticated, ]
     )
     def download_shopping_cart(self, request):
+        """Отправка файла со списком покупок."""
         ingredients = RecipeIngredient.objects.filter(
             recipe__carts__user=request.user
         ).values(
