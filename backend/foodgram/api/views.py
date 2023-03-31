@@ -1,5 +1,6 @@
+from django.db.models import Sum
 from django_filters.rest_framework import DjangoFilterBackend
-from django.shortcuts import get_object_or_404
+from django.shortcuts import HttpResponse, get_object_or_404
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -16,7 +17,8 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              UserSubscribeRepresentSerializer,
                              UserSubscribeSerializer)
 from api.utils import create_model_instance, delete_model_instance
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
+from recipes.models import (Favorite, Ingredient, Recipe,
+                            RecipeIngredient, ShoppingCart, Tag)
 from users.models import Subscription, User
 
 
@@ -110,3 +112,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
             error_message = 'У вас нет этого рецепта в списке покупок'
             return delete_model_instance(request, ShoppingCart,
                                          recipe, error_message)
+    
+    @action(
+            detail=False,
+            methods=['get'],
+            permission_classes=[IsAuthenticated, ]
+    )
+    def download_shopping_cart(self, request):
+        ingredients = RecipeIngredient.objects.filter(
+            recipe__carts__user=request.user
+        ).values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(ingredient_amount=Sum('amount'))
+        shopping_list = ['Список покупок:\n']
+        for ingredient in ingredients:
+            name = ingredient['ingredient__name']
+            unit = ingredient['ingredient__measurement_unit']
+            amount = ingredient['ingredient_amount']
+            shopping_list.append(f'\n{name} - {amount}, {unit}')
+        response = HttpResponse(shopping_list, content_type='text/plain')
+        response['Content-Disposition'] = 'attachment; filename="shopping_cart.txt"'
+        return response
