@@ -54,7 +54,7 @@ def delete_model_instance(request, model_name, instance, error_message):
                                      recipe=instance).exists():
         return Response(
             {'errors': error_message},
-                status=status.HTTP_404_NOT_FOUND
+                status=status.HTTP_400_BAD_REQUEST
             )
     model_name.objects.filter(user=request.user, recipe=instance).delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
