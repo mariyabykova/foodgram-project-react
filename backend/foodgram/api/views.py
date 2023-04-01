@@ -33,7 +33,7 @@ class UserSubscribeView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     def delete(self, request, user_id):
         author = get_object_or_404(User, id=user_id)
         if not Subscription.objects.filter(user=request.user,
@@ -51,7 +51,7 @@ class UserSubscriptionsViewSet(mixins.ListModelMixin,
                                viewsets.GenericViewSet):
     """Получение списка всех подписок на пользователей."""
     serializer_class = UserSubscribeRepresentSerializer
-    
+
     def get_queryset(self):
         return User.objects.filter(following__user=self.request.user)
 
@@ -90,7 +90,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return RecipeGetSerializer
         return RecipeCreateSerializer
-    
+
     @action(
             detail=True,
             methods=['post', 'delete'],
@@ -103,12 +103,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'POST':
             return create_model_instance(request, recipe, FavoriteSerializer)
-        
+
         if request.method == 'DELETE':
             error_message = 'У вас нет этого рецепта в избранном'
             return delete_model_instance(request, Favorite,
                                          recipe, error_message)
-    
+
     @action(
             detail=True,
             methods=['post', 'delete'],
@@ -122,12 +122,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if request.method == 'POST':
             return create_model_instance(request, recipe,
                                          ShoppingCartSerializer)
-        
+
         if request.method == 'DELETE':
             error_message = 'У вас нет этого рецепта в списке покупок'
             return delete_model_instance(request, ShoppingCart,
                                          recipe, error_message)
-    
+
     @action(
             detail=False,
             methods=['get'],
