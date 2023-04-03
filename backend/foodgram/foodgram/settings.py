@@ -167,4 +167,3 @@ DJOSER = {
 }
 
 EMPTY_VALUE = '-пусто-'
-USER_ME_PATH = '/api/users/me/'

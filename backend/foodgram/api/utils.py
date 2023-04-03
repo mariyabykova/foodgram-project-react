@@ -24,13 +24,14 @@ def create_ingredients(ingredients, recipe):
     Используется при создании/редактировании рецепта."""
     ingredient_list = []
     for ingredient in ingredients:
-        current_ingredient = get_object_or_404(Ingredient, id=ingredient.get('id'))
+        current_ingredient = get_object_or_404(Ingredient,
+                                               id=ingredient.get('id'))
         amount = ingredient.get('amount')
         ingredient_list.append(
             RecipeIngredient(
-            recipe=recipe,
-            ingredient=current_ingredient,
-            amount=amount
+                recipe=recipe,
+                ingredient=current_ingredient,
+                amount=amount
             )
         )
     RecipeIngredient.objects.bulk_create(ingredient_list)
