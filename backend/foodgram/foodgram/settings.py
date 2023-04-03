@@ -161,10 +161,9 @@ DJOSER = {
         'current_user': 'api.serializers.UserGetSerializer',
     },
     'PERMISSIONS': {
-        'user': ['api.permissions.CurrentUserOrSuperuserOrReadOnly'],
         'user_list': ['rest_framework.permissions.AllowAny'],
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
     }
 }
 
 EMPTY_VALUE = '-пусто-'
-USER_ME_PATH = '/api/users/me/'
