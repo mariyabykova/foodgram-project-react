@@ -22,15 +22,18 @@ class Base64ImageField(serializers.ImageField):
 def create_ingredients(ingredients, recipe):
     """Вспомогательная функция для добавления ингредиентов.
     Используется при создании/редактировании рецепта."""
+    ingredient_list = []
     for ingredient in ingredients:
-        current_ingredient = get_object_or_404(Ingredient,
-                                               id=ingredient.get('id'))
+        current_ingredient = get_object_or_404(Ingredient, id=ingredient.get('id'))
         amount = ingredient.get('amount')
-        RecipeIngredient.objects.create(
+        ingredient_list.append(
+            RecipeIngredient(
             recipe=recipe,
             ingredient=current_ingredient,
             amount=amount
+            )
         )
+    RecipeIngredient.objects.bulk_create(ingredient_list)
 
 
 def create_model_instance(request, instance, serializer_name):
