@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 services:
 
   db:
@@ -27,8 +27,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
-    # depends_on:
-    #   - backend
+    depends_on:
+      - web
 
   nginx:
     image: nginx:1.19.3
@@ -42,6 +42,7 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - web
+      - frontend
     restart: always
 
 volumes:
