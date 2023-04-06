@@ -91,9 +91,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeCreateSerializer
 
     @action(
-            detail=True,
-            methods=['post', 'delete'],
-            permission_classes=[IsAuthenticated, ]
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated, ]
     )
     def favorite(self, request, pk):
         """Работа с избранными рецептами.
@@ -109,9 +109,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                          recipe, error_message)
 
     @action(
-            detail=True,
-            methods=['post', 'delete'],
-            permission_classes=[IsAuthenticated, ]
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated, ]
     )
     def shopping_cart(self, request, pk):
         """Работа со списком покупок.
@@ -128,9 +128,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                                          recipe, error_message)
 
     @action(
-            detail=False,
-            methods=['get'],
-            permission_classes=[IsAuthenticated, ]
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAuthenticated, ]
     )
     def download_shopping_cart(self, request):
         """Отправка файла со списком покупок."""
