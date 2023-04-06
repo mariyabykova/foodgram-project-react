@@ -9,7 +9,7 @@ services:
       - ./.env
     
   web:
-    image: mariaby/foodgram_backend
+    image: mariaby/backend
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    image: mariaby/foodgram_frontend
+    image: mariaby/frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
