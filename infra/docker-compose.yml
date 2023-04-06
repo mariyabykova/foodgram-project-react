@@ -9,9 +9,7 @@ services:
       - ./.env
     
   web:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: mariaby/foodgram_backend
     restart: always
     volumes:
       - static_value:/app/static/
