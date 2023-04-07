@@ -2,10 +2,10 @@
 
 ![Github actions](https://github.com/mariyabykova/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
-Проект доступен по ссылке: http://158.160.31.204/recipes
-Админ-панель: http://158.160.31.204/admin
-Документация: http://158.160.31.204/api/docs/ 
-Чтобы проверить работоспособность проекта, можно войти на сайт и в админ-панель с логином admin и паролем administrator748.
+* Проект доступен по ссылке: http://158.160.31.204/recipes
+* Админ-панель: http://158.160.31.204/admin
+* Документация: http://158.160.31.204/api/docs/ 
+* Чтобы проверить работоспособность проекта, можно войти на сайт и в админ-панель с логином admin и паролем administrator748.
 
 
 ### Описание
@@ -117,6 +117,7 @@ docker-compose exec web python manage.py collectstatic --no-input
 
 ```
 http://localhost/
+```
 
 
 ### Как запустить проект локально:
