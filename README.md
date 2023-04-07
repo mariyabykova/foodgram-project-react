@@ -1,6 +1,6 @@
 # Проект Foodgram
 
-https://github.com/mariyabykova/foodgram-project-react/actions/workflows/main.yml/badge.svg
+![Github actions](https://github.com/mariyabykova/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 Проект доступен по ссылке: http://158.160.31.204/recipes
 Админ-панель: http://158.160.31.204/admin
